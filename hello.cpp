@@ -9,15 +9,15 @@ int main()
 {
   printf("Hello World!\n");
 
-  int64_t sum = 1;
-  deque<int64_t> fibbydeque {1, 1};
+  uint64_t sum = 1;
+  deque<uint64_t> fibbydeque {1, 1};
 
   auto printSeries = [&sum](int index) { cout << index << ":  " << sum << endl; };
 
   printSeries(0);
   printSeries(1);
 
-  for (int i = 2; i < 50; i++)
+  for (int i = 2; i < 80; i++)
   {
     fibbydeque.push_back(sum);
     fibbydeque.pop_front();
