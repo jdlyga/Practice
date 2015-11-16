@@ -9,6 +9,7 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+
 template <class TYPE>
 struct linkedList
 {
@@ -51,6 +52,58 @@ void insertInBack(linkedList<string> *& head, string data)
 ////////////////////////////////////////////////////////////////////////////////
 
 
+bool popFront(linkedList<string> *& head, string & data)
+{
+  if (head == NULL)
+    return false;
+  else if (head->next == NULL)
+  {
+    data = head->data;
+    delete head;
+    head = NULL;
+  }
+  else
+  {
+    linkedList<string> * newHead = head->next;
+    data = head->data;
+    delete head;
+    head = newHead;
+  }
+  return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
+bool deleteAll(linkedList<string> *& head)
+{
+  linkedList<string> * ptr = head;
+  linkedList<string> * deleteMe = head;
+
+  while(ptr != NULL)
+  {
+    ptr = ptr->next;
+    delete deleteMe;
+    deleteMe = ptr;
+  }
+  head = NULL;
+  return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
+linkedList<string> * find(linkedList<string> & head, string findstr)
+{
+  linkedList<string> * ptr = &head;
+  while (ptr != NULL)
+  {
+    if (ptr->data == findstr)
+      return ptr;
+    ptr = ptr->next;
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
 int main()
 {
   printf("Hi!\n");
@@ -67,10 +120,37 @@ int main()
   insertInBack(head, "5");
   insertInBack(head, "6");
 
-  while (head != NULL)
+  linkedList<string> * ptr = head;
+  while (ptr != NULL)
   {
-    printf("HERE IT IS: %s\n", head->data.c_str());
-    head = head->next;
+    printf("HERE IT IS: %s\n", ptr->data.c_str());
+    ptr = ptr->next;
   }
+
+  string data;
+  popFront(head, data);
+  printf("popped %s\n", data.c_str());
+  popFront(head, data);
+  printf("popped %s\n", data.c_str());
+  popFront(head, data);
+  printf("popped %s\n", data.c_str());
+
+  ptr = head;
+  while (ptr != NULL)
+  {
+    printf("HERE IT IS AGAIN: %s\n", ptr->data.c_str());
+    ptr = ptr->next;
+  }
+  printf("TADA!\n");
+
+  deleteAll(head);
+
+  ptr = head;
+  while (ptr != NULL)
+  {
+    printf("HERE IT IS AGAIN AGAIN: %s\n", ptr->data.c_str());
+    ptr = ptr->next;
+  }
+  printf("nothing in it!\n");
 }
 ////////////////////////////////////////////////////////////////////////////////
