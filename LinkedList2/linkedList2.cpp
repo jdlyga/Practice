@@ -14,13 +14,13 @@ linkedList * tail = NULL;
 bool findInList(linkedList * elem)
 {
   linkedList * walker = head;
-  while (head != NULL)
+  while (walker != NULL)
   {
-    walker = walker->next;
     if (walker == elem)
     {
       return true;
     }
+    walker = walker->next;
   }
   return false;
 }
@@ -59,21 +59,25 @@ bool insertAfter(linkedList * elem, int data)
 
 bool deleteMe(linkedList * elem)
 {
+
   if (!findInList(elem))
     return false;
 
   if (elem == head && elem == tail)
   {
+
     delete elem;
     head = NULL;
     tail = NULL;
     return true;
   }
 
+
   if (elem == head)
   {
+
     head = head->next;
-    delete head;
+    delete elem;
     return true;
   }
 
@@ -114,8 +118,10 @@ int main()
   }
 
   printf("\n\n");
-  printf("oldtail: %d\n", oldtail->data);
+
   deleteMe(oldtail);
+  deleteMe(head);
+  deleteMe(tail);
 
   ptr = head;
   while (ptr != NULL)
