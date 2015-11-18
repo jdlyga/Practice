@@ -36,6 +36,7 @@ bool insertAfter(linkedList * elem, int data)
 
   linkedList * newElem = new linkedList;
   newElem->data = data;
+  newElem->next = NULL;
 
   if (head != NULL && elem == NULL)
   {
@@ -59,23 +60,19 @@ bool insertAfter(linkedList * elem, int data)
 
 bool deleteMe(linkedList * elem)
 {
-
   if (!findInList(elem))
     return false;
 
   if (elem == head && elem == tail)
   {
-
     delete elem;
     head = NULL;
     tail = NULL;
     return true;
   }
 
-
   if (elem == head)
   {
-
     head = head->next;
     delete elem;
     return true;
@@ -91,12 +88,43 @@ bool deleteMe(linkedList * elem)
   if (elem == tail)
   {
     beforeElem = tail;
+    beforeElem->next = NULL;
   }
 
   delete elem;
   return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
+
+
+bool nthToLast(const int & n, linkedList *& slowPtr)
+{
+  if (n < 0) return false;
+
+  linkedList * walkPtr = head;
+  slowPtr = head;
+  int delayCtr = n;
+
+  while (walkPtr != NULL)
+  {
+    walkPtr = walkPtr->next;
+    
+    if (delayCtr >= 0)
+    {
+      delayCtr--;
+    }
+    else
+    {
+      if (slowPtr == NULL) return false;
+      slowPtr = slowPtr->next;
+    }
+  }
+
+  if (delayCtr >= 0)
+    return false;
+  else
+    return true;
+}
 
 
 int main()
@@ -129,4 +157,12 @@ int main()
     printf("Data Elem: %d\n", ptr->data);
     ptr = ptr->next;
   }
+
+  printf("nth from last...\n");
+  linkedList * nthPtr;
+  int nth = 0;
+  if (nthToLast(nth, nthPtr))
+    printf("!%d from last: %d\n", nth, nthPtr->data);
+  else
+    printf("ERROR!\n");
 }
