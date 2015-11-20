@@ -16,6 +16,7 @@ class binaryTree
     int findHeight(int heightCounter = 1);
     void preorderTraversal();
     void preorderTraversalNoRecursion();
+    int lowestCommonAncestor(int num1, int num2);
 
     int data;
     binaryTree * left = NULL;
@@ -96,6 +97,29 @@ void binaryTree::preorderTraversalNoRecursion()
   }
 }
 
+int binaryTree::lowestCommonAncestor(int num1, int num2)
+{
+  if ((num1 < data) && (num2 < data))
+  {
+    printf("left\n");
+    return left->lowestCommonAncestor(num1, num2);
+  }
+  else if ((num1 > data) && (num2 > data))
+  {
+    printf("right\n");
+    return right->lowestCommonAncestor(num1, num2);
+  }
+  else
+  {
+    printf("this");
+    return data;
+  }
+}
+
+
+
+
+
 
 int main()
 {
@@ -116,8 +140,21 @@ int main()
   // ptr->left->insertRight(1);
 
   printf("Height: %d\n", root->findHeight());
-  // root->preorderTraversal();
+  root->preorderTraversal();
   root->preorderTraversalNoRecursion();
+
+  binaryTree * binarySearchTree = new binaryTree(20);
+  binarySearchTree->insertLeft(8);
+  binarySearchTree->insertRight(22);
+  ptr = binarySearchTree->left;
+  ptr->insertLeft(4);
+  ptr->insertRight(12);
+  ptr = ptr->right;
+  ptr->insertLeft(10);
+  ptr->insertRight(14);
+
+  printf("AA\n");
+  printf("lowest: %d\n", binarySearchTree->lowestCommonAncestor(4, 14));
 }
 
 
