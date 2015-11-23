@@ -4,6 +4,7 @@
 #include <map>
 #include <unordered_map>
 #include <deque>
+#include <cmath>
 
 using namespace std;
 
@@ -91,6 +92,69 @@ string removeFromStringBetter(string & input, string toRemove)
   return input;
 }
 
+/*
+starting index, ending index
+starting index is start of string
+for each character in the string
+  if current character is a space, set ending index to that index
+    add substring to deque of strings
+    set starting index to the current character
+    continue
+  else increment ending pointer
+
+read deque backwards and add each word to a new string
+*/
+
+void reverseStringWords(string input)
+{
+  if (input.size() == 0) return;
+
+  int startingindex = 0, endingindex = 0;
+  deque<string> words;
+  for (int i = 0; i < input.size(); i++)
+  {
+    if (input[i] == ' ')
+    {
+      words.push_front(input.substr(startingindex, endingindex-startingindex));
+      startingindex = i+1;
+    }
+    if (i == input.size() - 1)
+    {
+      words.push_front(input.substr(startingindex, endingindex-startingindex+1));
+    }
+    endingindex++;
+  }
+
+  for (int i = 0; i < words.size(); i++)
+  {
+    printf("%s", words[i].c_str());
+    if (i != words.size() - 1)
+    {
+      printf(" ");
+    }
+  }
+}
+
+
+/*
+size = s
+s-1 ones place
+s-2 is tens
+s-3 is hundreds
+
+walk through string backwards
+  if (chr == 0) //do nothing
+  if (chr == 1) multiply by 1 * 10 to the s-value
+*/
+int stringToInt(string input)
+{
+  int intvalue = 0;
+  for (int i = 0; i < input.size(); i++)
+  {
+    intvalue += ((input[input.size()-i-1] - '0') * pow(10,i));
+  }
+  return intvalue;
+}
 
 
 int main()
@@ -108,4 +172,8 @@ int main()
   string testingStr = "Battle of the Vowels: Hawaii vs. Grozny";
   string newStr = removeFromStringBetter(testingStr, "aeiou");
   printf("newStr: %s\n", newStr.c_str());
+
+  reverseStringWords("Do or do not, there is no try.");
+
+  printf("\nstringtoint: %d\n", stringToInt("45601"));
 }
