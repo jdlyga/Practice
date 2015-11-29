@@ -1,6 +1,16 @@
 #include "StringPermutations.h"
-
 using namespace std;
+
+/**
+  build a tree of a string
+  keep a stack of letters that are available
+  insert original word at top of tree
+  call recursive function with a string of all the letters in the original word
+  
+  recursive function:
+    for each of the available letters, create a child out of each of the letters:
+      recurse with the available letters minus the current node's letter
+*/
 
 treeNode::treeNode()
 {}
