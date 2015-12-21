@@ -6,6 +6,7 @@
 #include <functional>
 #include <iostream>
 #include <cstring>
+#include <map>
 
 using namespace std;
 
@@ -60,6 +61,25 @@ void printTreeBFS(Node * root)
   }
 }
 
+void makeLL(map<int, deque<int> > & m, Node * root, int depth = 0)
+{
+  if (root == NULL) return;
+  m[depth].push_back(root->data);
+  makeLL(m, root->left, depth+1);
+  makeLL(m, root->right, depth+1);
+}
+
+void printMap(map<int, deque<int> > & m)
+{
+  for (auto elem : m)
+  {
+    for (int i = 0; i < elem.second.size(); i++)
+    {
+      cout << elem.first << ") " << elem.second[i] << endl;
+    }
+    cout << endl;
+  }
+}
 
 int main()
 {
@@ -68,6 +88,12 @@ int main()
   makeBST(v, 0, v.size()-1, root);
 
   printTreeDFS(root);
+
+  cout << "======================================================" << endl;
+
+  map<int, deque<int> > m;
+  makeLL(m, root);
+  printMap(m);
 
   return 0;
 }
