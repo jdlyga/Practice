@@ -33,185 +33,235 @@ escalate:
   check for free respondent greater than the current level
 */
 
-#include <iostream>
-#include <deque>
-#include <queue>
+#include "callcenter.h"
 
 using namespace std;
-
-enum employeeLevel {NONE = -1, RESPONDENT = 0, MANAGER = 1, DIRECTOR = 2};
-
-class employee;
-
-class call
-{
-  public:
-
-    call() {};
-    call(string n) : name(n) {};
-    ~call() {};
-
-    string name;
-
-    employee * assignedEmployee = NULL;
-    employeeLevel level = NONE;
-};
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class employee
+call::call() 
+{}
+////////////////////////////////////////////////////////////////////////////////
+
+
+call::call(string n) 
+  : name(n) 
+{}
+////////////////////////////////////////////////////////////////////////////////
+
+
+call::~call()
+{}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+employee::employee() 
+{}
+////////////////////////////////////////////////////////////////////////////////
+
+
+employee::~employee() 
+{}
+////////////////////////////////////////////////////////////////////////////////
+
+
+void employee::assignCall(call * c)
 {
-  public:
+  isFree = false;
+  c->assignedEmployee = this;
+}
+////////////////////////////////////////////////////////////////////////////////
 
-    employee() {};
-    ~employee() {};
 
-    void assignCall(call * c)
-    {
-      isFree = false;
-      c->assignedEmployee = this;
-    }
+string employee::getName() 
+{
+  return name;
+}
+////////////////////////////////////////////////////////////////////////////////
 
-    string getName() {return name;};
-    virtual employeeLevel getLevel() {return NONE;};
+
+employeeLevel employee::getLevel() 
+{
+  return NONE;
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
     
-    bool isFree = true;
-
-  protected:
-
-    string name;
-};
+respondent::respondent(string n) 
+{
+  name = n;
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class respondent : public employee
-{
-  public:
-
-    respondent(string n) {name = n;};
-    ~respondent() {};
-
-    virtual employeeLevel getLevel() {return RESPONDENT;};
-};
+respondent::~respondent() 
+{}
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class manager : public employee
+employeeLevel respondent::getLevel() 
 {
-  public:
-
-    manager(string n) {name = n;};
-    ~manager() {};
-
-    virtual employeeLevel getLevel() {return MANAGER;};
-};
+  return RESPONDENT;
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class director : public employee
+manager::manager(string n) 
 {
-  public:
+  name = n;
+}
+////////////////////////////////////////////////////////////////////////////////
 
-    director(string n) {name = n;};
-    ~director() {};
+manager::~manager() 
+{}
+////////////////////////////////////////////////////////////////////////////////
 
-    virtual employeeLevel getLevel() {return DIRECTOR;};
-};
+    
+employeeLevel manager::getLevel() 
+{
+  return MANAGER;
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class callCenter
+director::director(string n) 
 {
-  public:
+  name = n;
+}
+////////////////////////////////////////////////////////////////////////////////
 
-    callCenter() 
+
+director::~director() 
+{}
+////////////////////////////////////////////////////////////////////////////////
+
+
+employeeLevel director::getLevel() 
+{
+  return DIRECTOR;
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+callCenter::callCenter() 
+{
+  employees.resize(3);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
+callCenter::~callCenter() 
+{}
+////////////////////////////////////////////////////////////////////////////////
+
+
+void callCenter::dispatchCall()
+{
+  call * currentCall = calls[0];
+  calls.pop_front();
+
+  bool foundEmployee = false;
+
+  if (currentCall->level == DIRECTOR)
+  {
+    cout << "Already at max level\n" << endl;
+    return;
+  }
+
+  //if currentLevel is -1, it's new so assign to 0 which is dispatch
+  //if current level is set to something else, this assigns it to the next level
+  for (int l = currentCall->level+1; l < employees.size(); l++)
+  {
+    for (int e = 0; e < employees[l].size(); e++)
     {
-      employees.resize(3);
-    };
-
-    ~callCenter() {};
-
-    void dispatchCall()
-    {
-      call * currentCall = calls[0];
-      calls.pop_front();
-
-      bool foundEmployee = false;
-
-      if (currentCall->level == DIRECTOR)
+      if (employees[l][e].isFree)
       {
-        cout << "Already at max level\n" << endl;
-        return;
-      }
-
-      //if currentLevel is -1, it's new so assign to 0 which is dispatch
-      //if current level is set to something else, this assigns it to the next level
-      for (int l = currentCall->level+1; l < employees.size(); l++)
-      {
-        for (int e = 0; e < employees[l].size(); e++)
-        {
-          if (employees[l][e].isFree)
-          {
-            foundEmployee = true;
-            currentCall->level = (employeeLevel)l;
-            employees[l][e].assignCall(currentCall);
-            break;
-          }
-        }
-        if (foundEmployee) break;
-      }
-
-      if (!foundEmployee)
-      {
-        cout << "Could not find a free employee for call " << currentCall->name << endl;
-      }
-      else
-      {
-        cout << "Call " << currentCall->name << " is assigned to " << currentCall->assignedEmployee->getName() << " of level " << currentCall->level << endl;
+        foundEmployee = true;
+        currentCall->level = (employeeLevel)l;
+        employees[l][e].assignCall(currentCall);
+        break;
       }
     }
+    if (foundEmployee) break;
+  }
 
-    void reassignCall(call * c)
-    {
-      if (c == NULL) return;
+  if (!foundEmployee)
+  {
+    cout << "Could not find a free employee for call " << currentCall->name << endl;
+  }
+  else
+  {
+    cout << "Call " << currentCall->name << " is assigned to " << currentCall->assignedEmployee->getName() << " of level " << currentCall->level << endl;
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
 
-      if (c->assignedEmployee == NULL)
-      {
-        cout << "Assigned is NULL\n" << endl;
-      }
-      c->assignedEmployee->isFree = true;
-      c->assignedEmployee = NULL;
-      calls.push_front(c);
-      dispatchCall();
-    }
 
-    void addEmployee(employee & e)
-    {
-      if (e.getLevel() == NONE)
-      {
-        printf("Unassigned Employee!\n");
-        return;
-      }
+void callCenter::reassignCall(call * c)
+{
+  if (c == NULL) return;
 
-      employees[e.getLevel()].push_back(e);
-    }
+  if (c->assignedEmployee == NULL)
+  {
+    cout << "Assigned is NULL\n" << endl;
+  }
+  c->assignedEmployee->isFree = true;
+  c->assignedEmployee = NULL;
+  calls.push_front(c);
+  dispatchCall();
+}
+////////////////////////////////////////////////////////////////////////////////
 
-    void createCall(string name, call *& c)
-    {
-      c = new call(name);
-      calls.push_back(c);
-    }
 
-    int numCalls()
-    {
-      return calls.size();
-    }
+void callCenter::addEmployee(employee & e)
+{
+  if (e.getLevel() == NONE)
+  {
+    printf("Unassigned Employee!\n");
+    return;
+  }
 
-  private:
+  employees[e.getLevel()].push_back(e);
+}
+////////////////////////////////////////////////////////////////////////////////
 
-    deque<deque<employee>> employees;
-    deque<call*> calls;
-};
+
+void callCenter::createCall(string name, call *& c)
+{
+  c = new call(name);
+  calls.push_back(c);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
+int callCenter::numCalls()
+{
+  return calls.size();
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -270,3 +320,4 @@ int main()
 
   return 0;
 }
+////////////////////////////////////////////////////////////////////////////////
