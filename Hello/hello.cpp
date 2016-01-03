@@ -13,23 +13,21 @@ int main()
 {
   printf("Hello World!\n");
 
-  __int128 sum = 1;
-  deque<__int128> fibbydeque {1, 1};
+  __int128 sum = 1, nMinus1 = 1, nMinus2 = 0;
 
   auto printSeries = [&sum](int index) { cout << index << ":  " << sum << endl; };
 
   printSeries(1);
-  printSeries(2);
 
-  for (int i = 3; i <= 184; i++) //unsigned 128 bit int overflows after 184
+  for (int i = 2; i <= 184; i++) //unsigned 128 bit int overflows after 184
   {
-    fibbydeque.push_back(sum);
-    fibbydeque.pop_front();
-    sum = fibbydeque[0] + fibbydeque[1];
+    sum = nMinus1 + nMinus2;
+    nMinus2 = nMinus1;
+    nMinus1 = sum;
     printSeries(i);
   }
-}
-////////////////////////////////////////////////////////////////////////////////
+
+}////////////////////////////////////////////////////////////////////////////////
 
 
 //from StackOverflow to print __int128_t
