@@ -124,14 +124,14 @@ int HashTable::findOpenBucket(int startingkey)
 
 int main()
 {
-  HashTable map;
-  map.insert(3, 1);
-  map.insert(5, 3);
-  map.insert(6, 5);
-  map.insert(10, 7);
-  map.insert(14, 9);
-  printf("Getting values for 3 and 5:  %d, %d\n", map.get(3)->value, map.get(5)->value);
-  printf("Getting values for 6, 10, 14:  %d, %d, %d\n", map.get(6)->value, map.get(10)->value, map.get(14)->value);
+  HashTable mappy;
+  mappy.insert(3, 1);
+  mappy.insert(5, 3);
+  mappy.insert(6, 5);
+  mappy.insert(10, 7);
+  mappy.insert(14, 9);
+  printf("Getting values for 3 and 5:  %d, %d\n", mappy.get(3)->value, mappy.get(5)->value);
+  printf("Getting values for 6, 10, 14:  %d, %d, %d\n", mappy.get(6)->value, mappy.get(10)->value, mappy.get(14)->value);
 }
 
 
